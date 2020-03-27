@@ -17,7 +17,7 @@ var config = {
   onSnapEnd: onSnapEnd,
   onMouseoutSquare: onMouseoutSquare,
   onMouseoverSquare: onMouseoverSquare,
-  pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+  pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
 }
 
 function makeMove() {
@@ -36,5 +36,5 @@ function makeMove() {
 // 	showNotation: false,
 // }
 
-board = Chessboard('myBoard', config)
+board = Chessboard('myBoard', config);
 // think = Chessboard('think', thinkConfig)

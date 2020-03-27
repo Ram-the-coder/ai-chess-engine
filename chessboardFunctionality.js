@@ -19,7 +19,7 @@ function calculatePointsByPiece() {
       }
     }
   }
-  console.log("points: ", points);
+  console.log("points: ", points);  
   return points;
 }
 
@@ -32,10 +32,24 @@ function updateMoves() {
 
 function onDragStart (source, piece, position, orientation) {
   // do not pick up pieces if the game is over
-  if (game.game_over()) return false
+  if (game.game_over()) return false;
 
   // only pick up pieces for White
-  if (piece.search(/^b/) !== -1) return false
+  if (piece.search(/^b/) !== -1) return false;
+
+  var moves = game.moves({
+      square: source,
+      verbose: true
+  });
+
+  if (moves.length === 0) return;
+
+  greySquare(source);
+
+  for (var i = 0; i < moves.length; i++) {
+      greySquare(moves[i].to);
+  }
+  return true;
 }
 
 function onDrop (source, target) {
