@@ -16,12 +16,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="game">
-        <div id="myBoard"></div>
-        <div class="sidebar">
-            <div class="controls">
-                <button class="btn btn-light" onclick="handleUndo()">Undo</button>
-                <button class="btn btn-light" onclick="handleReset()">Reset</button>
+    <div class="game row">
+        <div id="myBoard" class="col-lg-5"></div>
+        <div class="sidebar col-lg-7 row">
+            <div class="controls row">
+                <button class="btn btn-light col" onclick="handleUndo()">Undo</button>
+                <button class="btn btn-light col" onclick="handleReset()">Reset</button>
             </div>
             <div class="moves-bar">
                 <b>Moves: </b>                

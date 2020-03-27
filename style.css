@@ -1,18 +1,20 @@
+body .row {
+	margin: 0;
+}
+
 .game {
-	display: flex;
-	flex-wrap: wrap;
-	margin: 5vh auto;
+	/*display: flex;
+	flex-wrap: wrap;*/
 	line-height: 2em;
 	font-family: sans-serif;
 }
 
 #myBoard {
-	width: 40vw;
-	margin: auto;
+
 }
 
 .sidebar {
-	width: 40vw;
+	/*width: 40vw;*/
 	padding: 0 2.5vw;
 	display: flex;
 	flex-direction: column;
@@ -24,11 +26,11 @@
 }
 
 .controls {
-	flex-basis: 10%;
+	/*flex-basis: 10%;*/
 }
 
 .moves-bar {
-	flex-basis: 60%;
+	/*flex-basis: 60%;*/
 }
 
 #moves {
