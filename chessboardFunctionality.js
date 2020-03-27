@@ -14,6 +14,7 @@ function onDrop (source, target) {
     promotion: 'q' // NOTE: always promote to a queen for example simplicity
   })
 
+  removeGreySquares();
   // illegal move
   if (move === null) return 'snapback'
 
@@ -24,7 +25,7 @@ function onDrop (source, target) {
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
-  board.position(game.fen())
+  board.position(game.fen());
 }
 
 var onMouseoverSquare = function(square, piece) {

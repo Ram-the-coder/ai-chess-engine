@@ -1,19 +1,98 @@
-function getPieceValue(piece) {
-	function getAbsoluteValue(piece) {
+const pawnEvalWhite =
+    [
+        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+        [5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
+        [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
+        [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
+        [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
+        [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
+        [0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5],
+        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
+    ];
+
+const pawnEvalBlack = pawnEvalWhite.slice().reverse();
+
+const knightEval =
+    [
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+        [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
+        [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
+        [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+        [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
+        [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
+        [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+    ];
+const bishopEvalWhite = [
+    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
+    [ -1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
+    [ -1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
+    [ -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
+    [ -1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
+    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+];
+
+const rookEvalWhite = [
+    [  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+    [  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [  0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0]
+];
+
+const rookEvalBlack = rookEvalWhite.slice().reverse();
+
+const bishopEvalBlack = bishopEvalWhite.slice().reverse();
+
+const evalQueen =
+    [
+    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [ -0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [  0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [ -1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+];
+
+const kingEvalWhite = [
+
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+    [ -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+    [  2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0 ],
+    [  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0 ]
+];
+
+
+const kingEvalBlack = kingEvalWhite.slice().reverse();
+
+
+function getPieceValue(piece, i, j) {
+	function getAbsoluteValue(piece, isWhite, i, j) {
 		switch(piece.type) {
-			case 'p': return 10;
-			case 'r': return 50;
-			case 'n': return 30;
-			case 'b': return 30;
-			case 'q': return 90;
-			case 'k': return 900;
+			case 'p': return 10 + (isWhite ? pawnEvalWhite[i][j] : pawnEvalBlack[i][j]);
+			case 'r': return 50 + (isWhite ? rookEvalWhite[i][j] : rookEvalBlack[i][j]);
+			case 'n': return 30 + knightEval[i][j];
+			case 'b': return 30 + (isWhite ? bishopEvalBlack[i][j] : bishopEvalBlack[i][j]);
+			case 'q': return 90 + evalQueen[i][j];
+			case 'k': return 900 + (isWhite ? kingEvalWhite[i][j] : kingEvalBlack[i][j]);
 			default: console.err("Unknown piece type " + piece); return 0;
 		}	
 	}
 	if(piece === null)
 		return 0;
 
-	const absVal = getAbsoluteValue(piece);
+	const absVal = getAbsoluteValue(piece, piece.color === 'w', i, j);
 	return piece.color === 'w' ? absVal : -absVal;
 }
 
@@ -21,7 +100,7 @@ function evalBoard(board) {
 	let points = 0;
 	for(let i=0; i<8; ++i) {
 		for(let j=0; j<8; ++j) {
-			points += getPieceValue(board[i][j]);
+			points += getPieceValue(board[i][j], i, j);
 		}
 	}
 	return points;
@@ -71,6 +150,8 @@ function miniMax(game, depth, alpha, beta, isMax) {
 			} else if(newval.val === max) {
 				bestMoves.push(possibleMoves[i]);
 			}
+			if(alpha > beta)
+				break;
 		}
 		let randomIdx = Math.floor(Math.random() * bestMoves.length);
 		return {val: max, move: bestMoves[randomIdx], detail, evaluated};
@@ -89,6 +170,8 @@ function miniMax(game, depth, alpha, beta, isMax) {
 			} else if(newval.val === min) {
 				bestMoves.push(possibleMoves[i]);
 			}
+			if(alpha > beta)
+				break;
 		}
 		let randomIdx = Math.floor(Math.random() * bestMoves.length)
 		return {val: min, move: bestMoves[randomIdx], detail, evaluated};
