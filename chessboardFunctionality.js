@@ -25,7 +25,15 @@ function calculatePointsByPiece() {
 
 function updateMoves() {
   str = "";
-  game.history().forEach(move => str += " " + move);
+  count=1;
+  game.history().forEach((move, index) => {
+    str += " ";
+    if(index % 2 == 0)
+      str += (count++) + ".";
+    str += move;
+    if(index % 2)
+      str += "&nbsp";
+  });
   $('#moves').html(str);
   $('#points').html(calculatePointsByPiece());
 }
