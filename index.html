@@ -13,9 +13,44 @@
 
     <script src="./node_modules/chess.js/chess.js"></script>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
-	<div id="myBoard" style="width: 600px"></div>
+    <div class="game">
+        <div id="myBoard"></div>
+        <div class="sidebar">
+            <div class="controls">
+                <button class="btn btn-light" onclick="handleUndo()">Undo</button>
+                <button class="btn btn-light" onclick="handleReset()">Reset</button>
+            </div>
+            <div class="moves-bar">
+                <b>Moves: </b>                
+                <div id="moves"></div>
+                <div class="hide" id="thinking-loader">
+                    <!-- <div class="lds-facebook hide"><div></div><div></div><div></div></div>     -->
+                    <div>AI is Thinking...</div>
+                    <div class="lds-ripple"><div></div><div></div></div>
+                </div>
+                
+            </div>
+            <div class="stats">
+                <div>
+                    <b>Points balance: </b><span id="points">0</span>
+                </div>
+                <div>
+                    <b>Search Depth: </b>
+                    <input type="number" name="search-depth" id="sdepth" min=1 max=7>    
+                </div>
+                <div>
+                    <b>Positions Evaluated: </b><span id="pos-eval">0</span>
+                </div>
+                <div>
+                    <b>Evaluation Speed: </b><span id="speed">0</span> positions/second
+                </div>
+            </div>
+        </div>
+    </div>
+
 	<script type="text/javascript" src="./chessboardFunctionality.js"></script>
 	<script type="text/javascript" src="./ai.js"></script>
 	<script type="text/javascript" src="./implement.js"></script>

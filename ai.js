@@ -106,12 +106,24 @@ function evalBoard(board) {
 	return points;
 }
 
-function makeBestMove() {
-	let isMax = game.turn() === 'w';
-	let bestMove = miniMax(game, 3, -999999, 999999, isMax);
-	console.log(bestMove);
-	game.move(bestMove.move);
-	board.position(game.fen());
+async function makeBestMove() {
+	return new Promise((resolve, reject) => {
+		let isMax = game.turn() === 'w';
+		$('#thinking-loader').toggleClass('hide');
+		setTimeout(() => {
+			const start = new Date().getTime();
+			let bestMove = miniMax(game, searchDepth, -999999, 999999, isMax);
+			const end = new Date().getTime();
+			$('#thinking-loader').toggleClass('hide');
+			$('#pos-eval').html(bestMove.evaluated);
+			$('#speed').html(Math.round(bestMove.evaluated*1000/(end-start)));
+			console.log(bestMove);
+			game.move(bestMove.move);
+			board.position(game.fen());	
+			return resolve();
+		}, 0);	
+	})
+	
 }
 
 function makeRandomMove () {
@@ -131,6 +143,15 @@ function miniMax(game, depth, alpha, beta, isMax) {
 
 	if(alpha > beta)
 		return {val: evalBoard(game.board()), detail: {}, evaluated: 1};
+
+	if(game.in_checkmate()) {
+		return {val: isMax ? -1000 : 1000, detail: {}, evaluated: 1};
+	}
+
+	if(game.in_draw() || game.in_stalemate() || game.in_threefold_repetition()) { 
+		return {val: 0, detail: {}, evaluated: 1};	
+	}
+
 	let possibleMoves = game.moves();
 	let bestMoves;
 	let detail={};
@@ -173,6 +194,7 @@ function miniMax(game, depth, alpha, beta, isMax) {
 			if(alpha > beta)
 				break;
 		}
+
 		let randomIdx = Math.floor(Math.random() * bestMoves.length)
 		return {val: min, move: bestMoves[randomIdx], detail, evaluated};
 	}

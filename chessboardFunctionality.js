@@ -1,3 +1,35 @@
+function calculatePointsByPiece() {
+  const board = game.board();
+  let points = 0;
+  for(let i=0; i<8; ++i) {
+    for(let j=0; j<8; ++j) {
+      if(board[i][j]) {
+        let pt=0;
+        switch(board[i][j].type) {
+          case 'p': pt = 10; break;
+          case 'r': pt = 50; break;
+          case 'b': pt = 30; break;
+          case 'n': pt = 30; break;
+          case 'q': pt = 90; break;
+          case 'k': break;
+        }
+        if(board[i][j].color === 'b')
+          pt = -pt;
+        points += pt;
+      }
+    }
+  }
+  console.log("points: ", points);
+  return points;
+}
+
+function updateMoves() {
+  str = "";
+  game.history().forEach(move => str += " " + move);
+  $('#moves').html(str);
+  $('#points').html(calculatePointsByPiece());
+}
+
 function onDragStart (source, piece, position, orientation) {
   // do not pick up pieces if the game is over
   if (game.game_over()) return false
@@ -19,7 +51,22 @@ function onDrop (source, target) {
   if (move === null) return 'snapback'
 
   // make random legal move for black
-  window.setTimeout(makeBestMove, 250)
+  updateMoves();
+
+  if(game.in_checkmate()) {
+    window.alert("Congratulation, you've won by checkmate");
+  } else if(game.in_stalemate()) { 
+   window.alert("Game drawn by stalemate"); 
+  } else if(game.in_threefold_repetition()) {
+    window.alert("Game drawn by threefold repetition"); 
+  }
+
+  window.setTimeout(() => {
+    makeBestMove().then(() => {
+      console.log("chosen");
+      updateMoves();
+    });
+  }, 250);
 }
 
 // update the board position after the piece snap
@@ -61,3 +108,16 @@ var greySquare = function(square) {
 
     squareEl.css('background', background);
 };
+
+function handleReset() {
+  game.reset();
+  board.position(game.fen());
+  updateMoves();
+}
+
+function handleUndo() {
+  game.undo();
+  game.undo();
+  board.position(game.fen()); 
+  updateMoves();
+}
