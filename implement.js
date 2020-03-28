@@ -2,12 +2,20 @@ var board = null
 // var think = null
 var game = new Chess()
 var searchDepth = 3;
+let doOrdering = false;
+
 $('#sdepth').val(searchDepth);
+
 $('#sdepth').change((e) => {
 	searchDepth = e.target.value;
 	console.log(searchDepth);
 })
-console.log(searchDepth);
+
+$('#morder').prop('checked', doOrdering);
+$('#morder').change((e) => {
+  doOrdering = e.target.checked;
+})
+
 
 var config = {
   draggable: true,

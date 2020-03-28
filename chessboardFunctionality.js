@@ -19,7 +19,6 @@ function calculatePointsByPiece() {
       }
     }
   }
-  console.log("points: ", points);  
   return points;
 }
 
@@ -85,7 +84,7 @@ function onDrop (source, target) {
 
   window.setTimeout(() => {
     makeBestMove().then(() => {
-      console.log("chosen");
+      // console.log("chosen");
       updateMoves();
     });
   }, 250);
