@@ -2,7 +2,7 @@ var board = null
 // var think = null
 var game = new Chess()
 var searchDepth = 3;
-let doOrdering = false;
+let doOrdering = true;
 
 $('#sdepth').val(searchDepth);
 
