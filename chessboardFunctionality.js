@@ -1,27 +1,3 @@
-function calculatePointsByPiece() {
-  const board = game.board();
-  let points = 0;
-  for(let i=0; i<8; ++i) {
-    for(let j=0; j<8; ++j) {
-      if(board[i][j]) {
-        let pt=0;
-        switch(board[i][j].type) {
-          case 'p': pt = 10; break;
-          case 'r': pt = 50; break;
-          case 'b': pt = 30; break;
-          case 'n': pt = 30; break;
-          case 'q': pt = 90; break;
-          case 'k': break;
-        }
-        if(board[i][j].color === 'b')
-          pt = -pt;
-        points += pt;
-      }
-    }
-  }
-  return points;
-}
-
 function updateMoves() {
   str = "";
   count=1;
@@ -61,31 +37,41 @@ function onDragStart (source, piece, position, orientation) {
 
 function onDrop (source, target) {
   // see if the move is legal
-  var move = game.move({
-    from: source,
-    to: target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  })
+  	move_cfg = {
+		from: source,
+		to: target,
+		promotion: 'q' // NOTE: always promote to a queen for example simplicity
+	};
 
-  removeGreySquares();
-  // illegal move
-  if (move === null) return 'snapback'
+	var move = game.move(move_cfg);
 
-  // make random legal move for black
+	removeGreySquares();
+	// illegal move
+	if (move === null) return 'snapback'
+
+	game.undo();
+
+	if(isPromotion(source, target, game.board(), game.turn())) {
+		showModal();
+		return;
+	}
+
+	// make move
+	makeMove(move_cfg);
+}
+
+function makeMove(move_cfg) {
+  move = game.move(move_cfg);
+  if(move === null) return 'snapback';
   updateMoves();
-
-  if(game.in_checkmate()) {
-    window.alert("Congratulation, you've won by checkmate");
-  } else if(game.in_stalemate()) { 
-   window.alert("Game drawn by stalemate"); 
-  } else if(game.in_threefold_repetition()) {
-    window.alert("Game drawn by threefold repetition"); 
-  }
+  checkGameEnd(true);
+  if(gameOver)
+    return;
 
   window.setTimeout(() => {
-    makeBestMove().then(() => {
-      // console.log("chosen");
+    makeBestMove().then(async () => {
       updateMoves();
+      setTimeout(() => checkGameEnd(false), 400);
     });
   }, 250);
 }
@@ -94,6 +80,21 @@ function onDrop (source, target) {
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
   board.position(game.fen());
+}
+
+function checkGameEnd(endedByPlayer) {
+  gameOver = true;
+	if(game.in_checkmate()) {
+		endedByPlayer ? window.alert("Congratulation, you've won by checkmate") : window.alert("AI defeats you by checkmate");
+	} else if(game.in_stalemate()) { 
+		window.alert("Game drawn by stalemate"); 
+	} else if(game.in_threefold_repetition()) {
+		window.alert("Game drawn by threefold repetition"); 
+	} else if(game.insufficient_material()) {
+		window.alert("Game drawn by insufficient_material"); 
+	} else {
+    gameOver = false;
+  }
 }
 
 var onMouseoverSquare = function(square, piece) {
@@ -141,4 +142,30 @@ function handleUndo() {
   game.undo();
   board.position(game.fen()); 
   updateMoves();
+}
+
+function showModal() {
+  const width = document.querySelector('.board-b72b1').offsetWidth;
+  const offsetLeft = document.querySelector('.board-b72b1').offsetLeft;
+  $('#myModal').css('height', width);
+  $('#myModal').css('width', width);
+  $('#myModal').css('margin-left', offsetLeft);
+  $('#myModal').fadeIn();
+  $('.pop-inner').fadeIn();
+  const imgStr = 'https://chessboardjs.com/img/chesspieces/wikipedia/';
+  $('#q').attr('src', imgStr + game.turn() + 'Q.png');
+  $('#r').attr('src', imgStr + game.turn() + 'R.png');
+  $('#n').attr('src', imgStr + game.turn() + 'N.png');
+  $('#b').attr('src', imgStr + game.turn() + 'B.png');
+}
+
+function hideModal() {
+  $('#myModal').fadeOut();
+  $('.pop-inner').fadeOut();
+}
+
+function setPromotion(piece) {
+ move_cfg.promotion = piece;
+ hideModal();
+ makeMove(move_cfg);
 }

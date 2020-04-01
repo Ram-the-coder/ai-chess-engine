@@ -89,3 +89,48 @@ body .row {
 	align-items: center;
 }
 
+.pop-outer {
+	position: absolute!important;
+	background: rgba(0,0,0,0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.promoPiece:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+	transition: 0.1s;
+}
+
+.modal-title {
+	color: white;
+	font-size: 270%;
+	font-weight: bold;
+	text-align: center;
+	margin: 10%;
+	line-height: 250% !important;
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+/*.points {
+	width: 100%;
+	height: 4vh;
+	padding: 1px;
+	display: flex;
+	background: whitesmoke;
+}
+
+.white {
+	background: white;
+	height: 100%;
+	border: 2px solid black;
+	width: 50%;
+}
+
+.black {
+	background: black;
+	height: 100%;
+	border: 2px solid black;
+	width: 50%;
+}*/

@@ -1,112 +1,3 @@
-let foundNextBestMove;
-const pawnEvalWhite =
-    [
-        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
-        [5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
-        [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
-        [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
-        [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
-        [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
-        [0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5],
-        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
-    ];
-
-const pawnEvalBlack = pawnEvalWhite.slice().reverse();
-
-const knightEval =
-    [
-        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
-        [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
-        [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
-        [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
-        [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
-        [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
-        [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
-        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
-    ];
-const bishopEvalWhite = [
-    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
-    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
-    [ -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
-    [ -1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
-    [ -1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
-    [ -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
-    [ -1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
-    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
-];
-
-const rookEvalWhite = [
-    [  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
-    [  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
-    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-    [  0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0]
-];
-
-const rookEvalBlack = rookEvalWhite.slice().reverse();
-
-const bishopEvalBlack = bishopEvalWhite.slice().reverse();
-
-const evalQueen =
-    [
-    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
-    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
-    [ -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
-    [ -0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
-    [  0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
-    [ -1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
-    [ -1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
-    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
-];
-
-const kingEvalWhite = [
-
-    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-    [ -2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
-    [ -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
-    [  2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0 ],
-    [  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0 ]
-];
-
-
-const kingEvalBlack = kingEvalWhite.slice().reverse();
-
-
-function getPieceValue(piece, i, j) {
-	function getAbsoluteValue(piece, isWhite, i, j) {
-		switch(piece.type) {
-			case 'p': return 10 +  (i !== undefined ? (isWhite ? pawnEvalWhite[i][j] : pawnEvalBlack[i][j]) : 0);
-			case 'r': return 50 + (i !== undefined ? (isWhite ? rookEvalWhite[i][j] : rookEvalBlack[i][j]) : 0);
-			case 'n': return 30 + (i !== undefined ? knightEval[i][j] : 0);
-			case 'b': return 30 + (i !== undefined ? (isWhite ? bishopEvalBlack[i][j] : bishopEvalBlack[i][j]) : 0);
-			case 'q': return 90 + (i !== undefined ? evalQueen[i][j] : 0);
-			case 'k': return 900 +  (i !== undefined ? (isWhite ? kingEvalWhite[i][j] : kingEvalBlack[i][j]) : 0);
-			default: console.error("Unknown piece type " + piece, i); return 0;
-		}	
-	}
-	if(piece === null)
-		return 0;
-
-	const absVal = getAbsoluteValue(piece, piece.color === 'w', i, j);
-	return piece.color === 'w' ? absVal : -absVal;
-}
-
-function evalBoard(board) {
-	let points = 0;
-	for(let i=0; i<8; ++i) {
-		for(let j=0; j<8; ++j) {
-			points += getPieceValue(board[i][j], i, j);
-		}
-	}
-	return points;
-}
-
 function findNextBestMove(bestMove) {
 	nextBestMove = {};
 	for(const d1move in bestMove.detail) {
@@ -119,15 +10,6 @@ function findNextBestMove(bestMove) {
 	}
 	
 	return nextBestMove;	
-}
-
-function getCoords(square) {
-	let col = square[0]; //a-h => 0-7
-	let row = square[1]; //1-8 => 7-0
-	return {
-		i: 8 - (row - '0'),
-		j: col.charCodeAt(0) - ('a').charCodeAt(0)
-	}
 }
 
 function orderMoves(moves) {
@@ -183,9 +65,14 @@ async function makeBestMove() {
 		let isMax = game.turn() === 'w';
 		$('#thinking-loader').toggleClass('hide');
 		setTimeout(() => {
+			const moveNum = game.history().length + 1;
+			const hash = computeZobristHash(game.board());
+			
+			table = {};
 			const start = new Date().getTime();
-			let bestMove = miniMax(game, searchDepth, -999999, 999999, isMax);
+			let bestMove = miniMax(game, searchDepth, -999999, 999999, isMax, moveNum, hash);
 			const end = new Date().getTime();
+			
 			$('#thinking-loader').toggleClass('hide');
 			$('#pos-eval').html(bestMove.evaluated);
 			$('#speed').html(Math.round(bestMove.evaluated*1000/(end-start)));
@@ -213,19 +100,33 @@ function makeRandomMove () {
   board.position(game.fen())
 }
 
-function miniMax(game, depth, alpha, beta, isMax) {
-	if(depth === 0)
-		return {val: evalBoard(game.board()), detail: {}, evaluated: 1};
-
-	if(alpha > beta)
-		return {val: evalBoard(game.board()), detail: {}, evaluated: 1};
+function miniMax(game, depth, alpha, beta, isMax, moveNum, hash) {
+	// let fen = game.fen();
+	// console.log(game.history(), fen);
+	if(useTranspositionTable && table[hash] !== undefined) {	
+		// console.log(table[hash].val, game.fen(), table[hash].fen, computeZobristHash(game.board()), table[hash].hash);
+		// return table[hash];
+	}
+	if(depth === 0 || alpha > beta) {
+		const curPosStats = {val: evalBoard(game.board()), detail: {}, evaluated: 1, moveNum};
+		if(useTranspositionTable) {
+			table[hash] = curPosStats;
+		}
+		return curPosStats;
+	}
 
 	if(game.in_checkmate()) {
-		return {val: isMax ? -1000 : 1000, detail: {}, evaluated: 1};
+		const curPosStats = {val: isMax ? -1000 : 1000, detail: {}, evaluated: 1, moveNum};
+		if(useTranspositionTable)
+			table[hash] = curPosStats;
+		return curPosStats;
 	}
 
 	if(game.in_draw() || game.in_stalemate() || game.in_threefold_repetition()) { 
-		return {val: 0, detail: {}, evaluated: 1};	
+		const curPosStats = {val: 0, detail: {}, evaluated: 1, moveNum};	
+		if(useTranspositionTable)
+			table[hash] = curPosStats;
+		return curPosStats;
 	}
 
 	let possibleMoves = game.moves();
@@ -239,8 +140,18 @@ function miniMax(game, depth, alpha, beta, isMax) {
 	if(isMax) {
 		let max = -99999;
 		for(let i=0; i<possibleMoves.length; ++i) {
+	
+			let newHash;
+			if(useTranspositionTable) {
+				newHash = recomputeZobristHash(hash, game.board(), possibleMoves[i], game.turn() === 'w');
+			}
 			game.move(possibleMoves[i]);
-			let newval = miniMax(game, depth-1, alpha, beta, false);
+			if(useTranspositionTable && computeZobristHash(game.board()) !== newHash) {
+				console.log("CLASH")
+				console.log(game.history());
+				debugger;
+			}
+			let newval = miniMax(game, depth-1, alpha, beta, false, moveNum, newHash);
 			evaluated += newval.evaluated;
 			detail[possibleMoves[i]] = newval;
 			alpha = Math.max(alpha, newval.val);
@@ -257,12 +168,27 @@ function miniMax(game, depth, alpha, beta, isMax) {
 			}
 		}
 		let randomIdx = Math.floor(Math.random() * bestMoves.length);
-		return {val: max, move: bestMoves[randomIdx], detail, evaluated};
+		const curPosStats = {val: max, move: bestMoves[randomIdx], detail, evaluated, moveNum};
+		if(useTranspositionTable)
+			table[hash] = curPosStats;
+		return curPosStats;
 	} else {
 		let min = 99999;
 		for(let i=0; i<possibleMoves.length; ++i) {
+			let newHash;
+			let boardB = game.board();
+			let turn = game.turn();
+			if(useTranspositionTable) {
+				newHash = recomputeZobristHash(hash, game.board(), possibleMoves[i], game.turn() === 'w');
+			}
 			game.move(possibleMoves[i]);
-			let newval = miniMax(game, depth-1, alpha, beta, true);
+			let boardA = game.board();
+			if(useTranspositionTable && computeZobristHash(game.board()) !== newHash) {
+				console.log("CLASH")
+				console.log(game.history());
+				debugger;
+			}
+			let newval = miniMax(game, depth-1, alpha, beta, true, moveNum, newHash);
 			evaluated += newval.evaluated;
 			detail[possibleMoves[i]] = newval;
 			beta = Math.min(beta, newval.val);
@@ -280,6 +206,9 @@ function miniMax(game, depth, alpha, beta, isMax) {
 		}
 
 		let randomIdx = Math.floor(Math.random() * bestMoves.length)
-		return {val: min, move: bestMoves[randomIdx], detail, evaluated};
+		const curPosStats = {val: min, move: bestMoves[randomIdx], detail, evaluated ,moveNum};
+		if(useTranspositionTable)
+			table[hash] = curPosStats;
+		return curPosStats;
 	}
 }

@@ -1,8 +1,19 @@
 var board = null
-// var think = null
-var game = new Chess()
+var move_cfg, gameover;
+let table = {}
+let foundNextBestMove;
+// let startFEN = "8/8/8/8/8/8/2K2pk1/8 w - - 0 1";
+// let startFEN = "8/2KP2k1/8/8/8/8/8/8 w - - 0 1";
+let startFEN;
+var game = new Chess();
+gameOver = false;
+if(startFEN !== undefined)
+  game.load(startFEN);
+
+
 var searchDepth = 3;
 let doOrdering = true;
+let useTranspositionTable = true;
 
 $('#sdepth').val(searchDepth);
 
@@ -16,10 +27,15 @@ $('#morder').change((e) => {
   doOrdering = e.target.checked;
 })
 
+$('#trans').prop('checked', useTranspositionTable);
+$('#trans').change((e) => {
+  useTranspositionTable = e.target.checked;
+})
+
 
 var config = {
   draggable: true,
-  position: 'start',
+  position: startFEN !== undefined ? startFEN : 'start',
   onDragStart: onDragStart,
   onDrop: onDrop,
   onSnapEnd: onSnapEnd,
@@ -28,21 +44,6 @@ var config = {
   pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
 }
 
-function makeMove() {
-	window.setTimeout(() => {
-    makeBestMove().then(() => {
-      console.log("chosen");
-      updateMoves();
-      makeMove();
-    });
-  }, 250);
-}
-
-// var thinkConfig = {
-// 	position: 'start',
-// 	pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
-// 	showNotation: false,
-// }
-
 board = Chessboard('myBoard', config);
-// think = Chessboard('think', thinkConfig)
+
+

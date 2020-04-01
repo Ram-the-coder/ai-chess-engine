@@ -2,7 +2,9 @@
 <html>
 <head>
 	<title></title>
-	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
         integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
         crossorigin="anonymous"></script>
@@ -14,10 +16,23 @@
     <script src="./node_modules/chess.js/chess.js"></script>
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
 </head>
 <body>
     <div class="game row">
         <div id="myBoard" class="col-lg-5"></div>
+        <div id="myModal" class="pop-outer col-lg-5" style="display:none">
+            <div class="pop-inner" style="display:none">
+                <div class="modal-title">Promote to</div>
+                <div>
+                    <img id="q" class="promoPiece" onclick="setPromotion('q')">
+                    <img id="r" class="promoPiece" onclick="setPromotion('r')">
+                    <img id="n" class="promoPiece" onclick="setPromotion('n')">
+                    <img id="b" class="promoPiece" onclick="setPromotion('b')">
+                </div>
+            </div>
+        </div>
+
         <div class="sidebar col-lg-7 row">
             <div class="controls row">
                 <button class="btn btn-light btn-lg col" onclick="handleUndo()">Undo</button>
@@ -41,7 +56,8 @@
                     <b>Search Depth: </b>
                     <input type="number" name="search-depth" id="sdepth" min=1 max=7>    
                     <div>
-                    	<input type="checkbox" id="morder">Do Move Ordering</div>
+                    	<input type="checkbox" id="morder">Do Move Ordering
+                    	<input type="checkbox" id="trans">Use transposition table
                     </div>
                 </div>
                 <div>
@@ -57,6 +73,8 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="./util.js"></script>
+    <script type="text/javascript" src="./transpositionTable.js"></script>
 	<script type="text/javascript" src="./chessboardFunctionality.js"></script>
 	<script type="text/javascript" src="./ai.js"></script>
 	<script type="text/javascript" src="./implement.js"></script>
