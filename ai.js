@@ -105,7 +105,7 @@ function miniMax(game, depth, alpha, beta, isMax, moveNum, hash) {
 	// console.log(game.history(), fen);
 	if(useTranspositionTable && table[hash] !== undefined) {	
 		// console.log(table[hash].val, game.fen(), table[hash].fen, computeZobristHash(game.board()), table[hash].hash);
-		// return table[hash];
+		return table[hash];
 	}
 	if(depth === 0 || alpha > beta) {
 		const curPosStats = {val: evalBoard(game.board()), detail: {}, evaluated: 1, moveNum};
